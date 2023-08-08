@@ -1,0 +1,56 @@
+﻿@page "/students/create"
+@using CUni.Shared;
+@inject HttpClient HttpClient;
+@inject NavigationManager NavigationManager;
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Student</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="student" OnValidSubmit="AddStudent">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label class="control-label">First and Middle Names</label>
+                <InputText @bind-Value="student.FirstMidName" class="form-control" />
+                <ValidationMessage For="@(() => student.FirstMidName)" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Last Name</label>
+                <InputText @bind-Value="student.LastName" class="form-control" />
+                <ValidationMessage For="@(() => student.LastName)" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Enrollment Date</label>
+                <InputText @bind-Value="student.EnrollmentDate" class="form-control" />
+                <ValidationMessage For="@(() => student.EnrollmentDate)" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" >Create</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <NavLink>
+        <a href="/students">Back to List</a>
+    </NavLink>
+</div>
+
+@code {
+    private CreateStudentData student = new();
+
+    async void AddStudent()
+    {
+        Console.WriteLine(student);
+        var response = await HttpClient.PostAsJsonAsync("students", student);
+        var newStudentId = await response.Content.ReadFromJsonAsync<int>();
+        Console.WriteLine(response);
+        Console.WriteLine(newStudentId);
+        NavigationManager.NavigateTo("/students", true);
+    }
+}

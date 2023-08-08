@@ -1,0 +1,45 @@
+﻿@page "/about"
+@using CUni.Shared;
+@inject HttpClient HttpClient;
+
+<h3>About</h3>
+
+<PageTitle>Student Body Statistics</PageTitle>
+
+<h2>Student Body Statistics</h2>
+
+<table>
+    <tr>
+        <th>
+            Enrollment Date
+        </th>
+        <th>
+            Students
+        </th>
+    </tr>
+    @if (Students is not null)
+    {
+        @foreach (var item in Students)
+        {
+            <tr>
+                <td>
+                    @item.EnrollmentDate.Value.ToString("yyyy/MM/dd")
+                </td>
+                <td>
+                    @item.StudentCount
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+@code {
+    public IList<EnrollmentDateGroup> Students { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Students = await HttpClient.GetFromJsonAsync<List<EnrollmentDateGroup>>("/students/stats");
+    }
+
+}
+

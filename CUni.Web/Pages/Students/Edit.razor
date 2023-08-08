@@ -1,0 +1,60 @@
+﻿@page "/students/edit/{id:int}"
+@using CUni.Shared;
+@inject HttpClient HttpClient;
+@inject NavigationManager NavigationManager;
+
+<h3>Edit</h3>
+
+<h4>Student</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="studentUpdates" OnValidSubmit="HandleStudentUpdate">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>First Name(s)</label>
+                <InputText @bind-Value="studentUpdates.FirstMidName" class="form-control" />
+                <ValidationMessage For="@(()=> studentUpdates.FirstMidName)" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Last Name</label>
+                <InputText @bind-Value="studentUpdates.LastName" class="form-control" />
+                <ValidationMessage For="@(()=> studentUpdates.LastName)" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<NavLink>
+    <a href="/students">Back to List</a>
+</NavLink>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    UpdateStudentData studentUpdates = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await HttpClient.GetFromJsonAsync<StudentResponse>($"/students/{id}");
+        if (response is not null)
+        {
+            studentUpdates.FirstMidName = response.FirstMidName;
+            studentUpdates.LastName = response.LastName;
+        }
+    }
+
+    async void HandleStudentUpdate()
+    {
+        var response = await HttpClient.PutAsJsonAsync($"/students/{id}", studentUpdates);
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            NavigationManager.NavigateTo("/students", true);
+        }
+    }
+
+}
