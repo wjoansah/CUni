@@ -16,6 +16,12 @@ namespace CUni.Server.Config
             CreateMap<Enrollment, CreateEnrollmentRequest>().ReverseMap();
 
             CreateMap<Course, CourseResponse>().ReverseMap();
+
+            CreateMap<Instructor, InstructorResponse>().ReverseMap();
+
+            CreateMap<Department, DepartmentResponse>().ReverseMap();
+
+            CreateMap<OfficeAssignment, OfficeAssignmentResponse>().ReverseMap();
         }
     }
 }
