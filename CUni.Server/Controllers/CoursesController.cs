@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using CUni.Server.Repositories;
+using CUni.Server.Services;
 using CUni.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CUni.Server.Controllers
 {
@@ -10,20 +12,25 @@ namespace CUni.Server.Controllers
     public class CoursesController : ControllerBase
     {
 
-        private readonly CourseRepository _courseRepository;
-        private readonly IMapper _mapper;
+        private readonly ServiceWrapper _services;
 
-        public CoursesController(CourseRepository courseRepository, IMapper mapper)
+        public CoursesController(ServiceWrapper wrapper)
         {
-            _courseRepository = courseRepository;
-            _mapper = mapper;
+            _services = wrapper;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CourseResponse>> GetAllCourses()
+        public async Task<IEnumerable<CourseResponse>> GetCourses()
         {
-            var courses = _courseRepository.GetAll();
-            return _mapper.Map<IEnumerable<CourseResponse>>(courses);
+            return _services.Course.GetCourses();
+        }
+
+        [HttpGet, Route("{id}")]
+        public ActionResult<CourseResponse> GetCourse(int id)
+        {
+            var course = _services.Course.GetCourse(id);
+            if (course == null) { return NotFound(); }
+            return course;
         }
     }
 }
