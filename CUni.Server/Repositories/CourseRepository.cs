@@ -3,7 +3,11 @@ using CUni.Shared;
 
 namespace CUni.Server.Repositories
 {
-    public class CourseRepository : RepositoryBase<Course>
+    public interface ICourseRepository : IRepositoryBase<Course>
+    {
+    }
+
+    public class CourseRepository : RepositoryBase<Course>, ICourseRepository
     {
         public CourseRepository(CUniContext context) : base(context)
         {
