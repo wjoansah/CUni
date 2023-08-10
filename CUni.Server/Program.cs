@@ -2,6 +2,7 @@ using CUni.Data;
 using CUni.Server.Config;
 using CUni.Server.Data;
 using CUni.Server.Repositories;
+using CUni.Server.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +16,11 @@ builder.Services.AddDbContext<CUniContext>(options =>
 });
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
-builder.Services.AddScoped<StudentRepository>();
+//builder.Services.AddScoped<IStudentRepository>();
 builder.Services.AddScoped<CourseRepository>();
+
+builder.Services.AddScoped<RepositoryWrapper>();
+builder.Services.AddScoped<ServiceWrapper>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -33,6 +37,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 using(var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
